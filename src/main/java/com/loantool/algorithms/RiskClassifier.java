@@ -35,9 +35,33 @@ public class RiskClassifier {
         return decisions;
     }
 
-    
+    private RiskTier binarySearchRiskTier(double score) {
+        int[] thresholds = config.getRiskThresholds();
 
+        // Binary search through thresholds
+        int left = 0;
+        int right = thresholds.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (score >= thresholds[mid]) {
+                if (mid == 0 || score < thresholds[mid - 1]) {
+                    return getTierForThreshold(mid);
+                }
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return RiskTier.HIGH_RISK; // Default if not found
+    }
     
 
 
 }
+
+
+
+
